@@ -1,0 +1,222 @@
+public class Main {
+
+    static class Node {
+        String codigo, titulo, autor;
+        Node next;
+
+        Node(String codigo, String titulo, String autor) {
+            this.codigo = codigo;
+            this.titulo = titulo;
+            this.autor = autor;
+            next = null;
+        }
+    }
+
+    static class LinkedList {
+        Node head;
+
+        LinkedList() {
+            head = null;
+        }
+
+        void insert(String codigo, String titulo, String autor) {
+            Node newNode = new Node(codigo, titulo, autor);
+
+            if (head == null) {
+                head = newNode;
+            } else {
+                Node current = head;
+                while (current.next != null)
+                    current = current.next;
+                current.next = newNode;
+            }
+        }
+
+        void insertAtBeginning(String codigo, String titulo, String autor) {
+            Node newNode = new Node(codigo, titulo, autor);
+            newNode.next = head;
+            head = newNode;
+        }
+
+        boolean insertAtPosition(int position, String codigo, String titulo, String autor) {
+            if (position < 0)
+                return false;
+
+            if (position == 0) {
+                insertAtBeginning(codigo, titulo, autor);
+                return true;
+            }
+
+            Node current = head;
+            int i = 0;
+
+            while (i < position - 1 && current != null) {
+                current = current.next;
+                i++;
+            }
+
+            if (current == null)
+                return false;
+
+            Node newNode = new Node(codigo, titulo, autor);
+            newNode.next = current.next;
+            current.next = newNode;
+
+            return true;
+        }
+
+        void display() {
+            Node current = head;
+
+            if (current == null) {
+                System.out.println("Lista vacia");
+                return;
+            }
+
+            while (current != null) {
+                System.out.println(current.codigo + " " + current.titulo + " " + current.autor);
+                current = current.next;
+            }
+        }
+
+        boolean search(String codigo) {
+            Node current = head;
+
+            while (current != null) {
+                if (current.codigo.equals(codigo))
+                    return true;
+                current = current.next;
+            }
+
+            return false;
+        }
+
+        Node get(int position) {
+            if (position < 0)
+                return null;
+
+            Node current = head;
+            int i = 0;
+
+            while (i < position && current != null) {
+                current = current.next;
+                i++;
+            }
+
+            return current;
+        }
+
+        boolean delete(String codigo) {
+            if (head == null)
+                return false;
+
+            if (head.codigo.equals(codigo)) {
+                head = head.next;
+                return true;
+            }
+
+            Node current = head;
+
+            while (current.next != null) {
+                if (current.next.codigo.equals(codigo)) {
+                    current.next = current.next.next;
+                    return true;
+                }
+                current = current.next;
+            }
+
+            return false;
+        }
+
+        boolean deleteAtPosition(int position) {
+            if (head == null || position < 0)
+                return false;
+
+            if (position == 0) {
+                head = head.next;
+                return true;
+            }
+
+            Node current = head;
+            int i = 0;
+
+            while (i < position - 1 && current != null) {
+                current = current.next;
+                i++;
+            }
+
+            if (current == null || current.next == null)
+                return false;
+
+            current.next = current.next.next;
+            return true;
+        }
+
+        int size() {
+            int count = 0;
+            Node current = head;
+
+            while (current != null) {
+                count++;
+                current = current.next;
+            }
+
+            return count;
+        }
+    }
+
+    public static void main(String[] args) {
+
+        LinkedList list = new LinkedList();
+
+        list.insert("001", "Principito", "Antoine");
+        list.insert("002", "1984", "Orwell");
+        list.insert("003", "Quijote", "Cervantes");
+
+        System.out.println("Lista:");
+        list.display();
+
+        list.insertAtBeginning("000", "Cien años", "Marquez");
+
+        list.insertAtPosition(2, "004", "Hobbit", "Tolkien");
+
+        System.out.println("Despues de insertar:");
+        list.display();
+
+        System.out.println("Buscar 002:");
+
+        if (list.search("002"))
+            System.out.println("Encontrado");
+        else
+            System.out.println("No encontrado");
+
+        Node libro = list.get(2);
+
+        if (libro != null)
+            System.out.println("Posicion 2: " + libro.titulo);
+        else
+            System.out.println("Posicion invalida");
+
+        list.deleteAtPosition(0);
+        list.deleteAtPosition(1);
+        list.delete("003");
+
+        System.out.println("Lista final:");
+        list.display();
+
+        System.out.println("Buscar 999:");
+
+        if (list.search("999"))
+            System.out.println("Encontrado");
+        else
+            System.out.println("No encontrado");
+
+        if (!list.delete("999"))
+            System.out.println("Libro inexistente");
+
+        if (!list.deleteAtPosition(100))
+            System.out.println("Posicion invalida");
+
+        System.out.println("Total: " + list.size());
+    }
+}
